@@ -18,6 +18,15 @@ import {
 } from "firebase/firestore"; // Импортируем функцию initializeFirestore из модуля "firebase/firestore" для инициализации Firestore.
 
 // Конфигурация Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCyovJsAQb9WK-i9ltAWUvAoGHAAxvDj2o",
+  authDomain: "yffjfyuf.firebaseapp.com",
+  projectId: "yffjfyuf",
+  storageBucket: "yffjfyuf.appspot.com",
+  messagingSenderId: "695251726060",
+  appId: "1:695251726060:web:ee3833579a48ded913ffc9",
+  measurementId: "G-HRD902XRPX"
+};
 
 
 // Инициализация приложения Firebase

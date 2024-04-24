@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Social media app",
-    "slug": "socialMediaApp",
+    "slug": "diplomka",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -18,22 +18,30 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Доступ к вашей фотографии",
         "NSCameraUsageDescription": "Доступ к вашей камере"
-      }
+      },
+      "bundleIdentifier": "com.meruem.diplomka"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.meruem.diplomka"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "11dd4217-a6f8-4a07-90d4-a5647a1adc09"
+        "projectId": "f74bdb73-6063-4309-b369-8deaf496224a"
       }
     },
-    "owner": "ostrynska"
+    "owner": "meruem",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f74bdb73-6063-4309-b369-8deaf496224a"
+    }
   }
 }

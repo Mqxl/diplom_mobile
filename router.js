@@ -16,7 +16,7 @@ import NewsScreen from "./screens/main/NewsScreen";
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-export const useRoute = (isAuth) => {
+export const useRoute = (isAuth, navigation) => {
   const dispatch = useDispatch();
   if (!isAuth) {
     return (
@@ -55,8 +55,8 @@ export const useRoute = (isAuth) => {
         component={PostsScreen}
         options={({ route }) => ({
           tabBarIcon: ({ focused, size, color }) => (
-            <Ionicons
-              name={focused ? "grid" : "grid-outline"}
+            <Feather
+              name={focused ? "user" : "user"}
               size={size}
               color={color}
               style={{ alignSelf: 'center', marginTop: 10 }}
@@ -79,7 +79,7 @@ export const useRoute = (isAuth) => {
         options={{
           tabBarIcon: ({ focused, size, color }) => (
             <Feather
-                name={focused ? "upload" : "upload"} // Используем иконку "file-upload-outline" для загрузки файла
+                name={focused ? "shopping-bag" : "shopping-bag"} // Используем иконку "file-upload-outline" для загрузки файла
               size={size}
               color={color}
               style={{ alignSelf: 'center', marginTop: 10 }}
@@ -93,8 +93,8 @@ export const useRoute = (isAuth) => {
         component={CreatePostsScreen}
         options={({ navigation, route }) => ({
           tabBarIcon: ({ focused, size, color }) => (
-              <Ionicons
-                  name={focused ? "add" : "add-outline"}
+              <Feather
+                  name={focused ? "bell" : "bell"}
                   size={28}
                   color={color}
                   style={{ alignSelf: 'center', marginTop: 10 }}

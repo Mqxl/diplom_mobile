@@ -74,16 +74,11 @@ export const authStateChangeUser = () => async (dispatch) => {
 
 export const authUpdateAvatar = (photoURL) => async (dispatch) => {
   try {
-    await updateProfile(auth.currentUser, {
+    const response = await axios.put(`${API_BASE_URL}/user/avatar`, {
       photoURL,
     });
-    const user = auth.currentUser;
-    dispatch(
-      updateUserAvatar({
-        userPhoto: user.photoURL,
-      })
-    );
+    dispatch(updateUserAvatar(response.data.user.photoURL));
   } catch (error) {
-      Alert.alert(error.message);
-    }
-  };
+    Alert.alert(error.response.data.message);
+  }
+};
