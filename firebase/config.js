@@ -14,7 +14,7 @@ import {
 } from 'firebase/storage'; // Импортируем функцию getStorage из модуля 'firebase/storage' для получения ссылки на хранилище Firebase.
 
 import { 
-  initializeFirestore 
+  initializeFirestore, getFirestore
 } from "firebase/firestore"; // Импортируем функцию initializeFirestore из модуля "firebase/firestore" для инициализации Firestore.
 
 // Конфигурация Firebase
@@ -45,5 +45,7 @@ export const auth = initializeAuth(app, {
 // Получение ссылки на хранилище Firebase для данного приложения
 export const storage = getStorage(app);
 
+export const firestore = getFirestore();
+
 // Экспорт объекта приложения Firebase
-export default app;
+export default {app, firestore};

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "695251726060",
+    "project_id": "yffjfyuf",
+    "storage_bucket": "yffjfyuf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695251726060:android:b00f6c8857af4c6213ffc9",
+        "android_client_info": {
+          "package_name": "com.expoksjbfkjsdbf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfeQ5QleqgKEkIg5T_SBF7NZ2tjn4lKY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

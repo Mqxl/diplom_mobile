@@ -15,13 +15,18 @@
       "**/*"
     ],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Доступ к вашей фотографии",
-        "NSCameraUsageDescription": "Доступ к вашей камере"
+        "NSCameraUsageDescription": "Доступ к вашей камере",
+        "UIBackgroundModes": ["location", "fetch"]
       },
       "bundleIdentifier": "com.meruem.diplomka"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
+      "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

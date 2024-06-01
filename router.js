@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,12 +12,72 @@ import CreatePostsScreen from "./screens/main/CreatePostsScreen";
 import PostsScreen from "./screens/main/PostsScreen";
 import MessagesScreen from "./screens/main/MessagesScreen";
 import NewsScreen from "./screens/main/NewsScreen";
+import * as Notifications from 'expo-notifications'
+import { firestore } from "./firebase/config";
+import { setDoc, doc } from 'firebase/firestore';
+import * as Device from 'expo-device';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+    }),
+});
+
+
 export const useRoute = (isAuth, navigation) => {
   const dispatch = useDispatch();
+    useEffect(() => {
+        (async () => {
+            const isDevice = Device.isDevice
+            if(!isDevice) return
+            console.log('get push token')
+            const { status: existingStatus } = await Notifications.getPermissionsAsync()
+            let finalStatus = existingStatus;
+            if (existingStatus !== "granted") {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== "granted") {
+                return;
+            }
+            const auth = getAuth();
+            const token = await Notifications.getExpoPushTokenAsync({
+                projectId: "f74bdb73-6063-4309-b369-8deaf496224a"
+            });
+            let uid = ""
+            await onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    uid = user.uid;
+                    console.log(uid)
+                } else {
+                    console.log("err")
+                }
+            });
+            const tokensRef = doc(firestore, 'tokens', uid);
+            try {
+                await setDoc(tokensRef, {
+                    token: token.data,
+                    id: uid,
+                });
+                console.log("Данные успешно записаны в Firestore.");
+            } catch (error) {
+                console.error("Произошла ошибка при записи данных в Firestore:", error);
+            }
+        })();
+    }, [])
+
+    useEffect(() => {
+        const subscription = Notifications.addNotificationReceivedListener(notification => {
+            console.log(notification.request.content)
+        });
+        return () => subscription.remove();
+    }, []);
   if (!isAuth) {
     return (
       <AuthStack.Navigator initialRouteName="Login">
