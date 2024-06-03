@@ -16,7 +16,7 @@ const MessagesScreen = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://192.168.31.237:8088/gateway/sms-gate/api/v1/malls', {
+            const response = await fetch('http://192.168.31.205:8088/gateway/websocket/api/v2/malls', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

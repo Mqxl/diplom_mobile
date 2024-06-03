@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {useState, useContext, useEffect, useRef} from "react";
 import { TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -17,6 +17,7 @@ import { firestore } from "./firebase/config";
 import { setDoc, doc } from 'firebase/firestore';
 import * as Device from 'expo-device';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {useNavigation} from "@react-navigation/native";
 
 const AuthStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
@@ -74,10 +75,18 @@ export const useRoute = (isAuth, navigation) => {
 
     useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
-            console.log(notification.request.content)
+            console.log("receiv", notification);
         });
-        return () => subscription.remove();
+        const subscription2= Notifications.addNotificationResponseReceivedListener(notification => {
+            console.log("response", notification);
+            navigation.current?.navigate('NotificationDetails', { notification: notification });
+        });
+        return () => {
+            subscription.remove();
+            subscription2.remove;
+        }
     }, []);
+
   if (!isAuth) {
     return (
       <AuthStack.Navigator initialRouteName="Login">

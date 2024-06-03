@@ -1,7 +1,7 @@
-import { NavigationContainer } from "@react-navigation/native";
+import {NavigationContainer, useNavigation} from "@react-navigation/native";
 
 import { useRoute } from "../router";
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authStateChangeUser } from "../redux/auth/authOperations";
 import { ActivityIndicator } from "react-native";
