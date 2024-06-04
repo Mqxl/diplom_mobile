@@ -2,7 +2,7 @@
   "expo": {
     "name": "Social media app",
     "slug": "diplomka",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -54,7 +54,7 @@
     },
     "owner": "meruem",
     "runtimeVersion": {
-      "policy": "1.0.0"
+      "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/f74bdb73-6063-4309-b369-8deaf496224a"
