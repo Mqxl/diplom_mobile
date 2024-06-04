@@ -32,7 +32,10 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Доступ к вашей фотографии",
         "NSCameraUsageDescription": "Доступ к вашей камере",
-        "UIBackgroundModes": ["location", "fetch"]
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
       },
       "bundleIdentifier": "com.meruem.diplomka"
     },
@@ -49,17 +52,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "owner": "meruem",
+    "runtimeVersion": {
+      "policy": "1.0.0"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f74bdb73-6063-4309-b369-8deaf496224a"
+    },
     "extra": {
       "eas": {
         "projectId": "f74bdb73-6063-4309-b369-8deaf496224a"
       }
-    },
-    "owner": "meruem",
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/f74bdb73-6063-4309-b369-8deaf496224a"
     }
   }
 }
