@@ -1,15 +1,12 @@
 {
   "expo": {
     "name": "Social media app",
-    "slug": "diplomka",
+    "slug": "diplomaproject",
     "version": "1.2.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-
+    "runtimeVersion": "1.2.0",
     "plugins": [
       [
         "expo-notifications",
@@ -59,13 +56,13 @@
       "favicon": "./assets/favicon.png"
     },
     "owner": "meruem",
-    "updates": {
-      "url": "https://u.expo.dev/f74bdb73-6063-4309-b369-8deaf496224a"
-    },
     "extra": {
       "eas": {
-        "projectId": "f74bdb73-6063-4309-b369-8deaf496224a"
+        "projectId": "4ea3e22e-3ad3-4c4e-95c0-937eede4f235"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/4ea3e22e-3ad3-4c4e-95c0-937eede4f235"
     }
   }
 }

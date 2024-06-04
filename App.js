@@ -125,7 +125,7 @@ const App = () => {
       // Таймер для отправки данных каждые 5 секунд
       const intervalId = setInterval(async () => {
         const token = await Notifications.getExpoPushTokenAsync({
-          projectId: "f74bdb73-6063-4309-b369-8deaf496224a"
+          projectId: "4ea3e22e-3ad3-4c4e-95c0-937eede4f235"
         });
         const loc = await Location.getCurrentPositionAsync({});
         setLocation(loc);
