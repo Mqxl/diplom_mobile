@@ -6,6 +6,9 @@
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "plugins": [
       [
         "expo-notifications",
@@ -29,6 +32,7 @@
     ],
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
+      "buildNumber": "1",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Доступ к вашей фотографии",
         "NSCameraUsageDescription": "Доступ к вашей камере",
@@ -47,15 +51,13 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 1,
       "package": "com.meruem.diplomka"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "owner": "meruem",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "updates": {
       "url": "https://u.expo.dev/f74bdb73-6063-4309-b369-8deaf496224a"
     },
