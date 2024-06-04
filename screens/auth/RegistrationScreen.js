@@ -8,9 +8,9 @@ import { AntDesign } from '@expo/vector-icons';
 import { storage } from "../../firebase/config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { authSignUpUser } from "../../redux/auth/authOperations";
-import {Platform} from "react-native";
+import { Platform } from "react-native";
+import {getExpoPushTokenAsync} from "expo-notifications";
 
-// Начальное состояние формы регистрации
 const initialState = {
   nickname: "",
   email: "",
@@ -21,7 +21,6 @@ const initialState = {
 export default function RegistrationScreen({ navigation }) {
   const { height, width } = Dimensions.get('window');
 
-  // Состояния компонента
   const [isSecureEntry, setSecureEntry] = useState(true);
   const [state, setState] = useState(initialState);
   const [profileImage, setProfileImage] = useState(null);
@@ -32,23 +31,20 @@ export default function RegistrationScreen({ navigation }) {
     password: false,
   });
 
-  // Redux
   const dispatch = useDispatch();
 
-  // Функции для обработки фокуса и размытия полей ввода
   const onFocus = (inputName) => {
     setIsFocused({
-      [inputName]: true
-    })
-  }
+      [inputName]: true,
+    });
+  };
 
   const onBlur = (inputName) => {
     setIsFocused({
-      [inputName]: false
-    })
-  }
+      [inputName]: false,
+    });
+  };
 
-  // Запрос разрешений на доступ к библиотеке медиа
   useEffect(() => {
     (async () => {
       const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
@@ -56,13 +52,12 @@ export default function RegistrationScreen({ navigation }) {
     })();
   }, []);
 
-  // Выбор профильного изображения из галереи
   const PickProfileImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1
+      quality: 1,
     });
     if (result.canceled) {
       Alert.alert('Выберите изображение');
@@ -76,9 +71,8 @@ export default function RegistrationScreen({ navigation }) {
         userPhoto: photoLink,
       }));
     }
-  }
+  };
 
-  // Загрузка изображения на сервер
   const uploadPhotoToServer = async (photo) => {
     try {
       const id = uuid.v4();
@@ -94,211 +88,247 @@ export default function RegistrationScreen({ navigation }) {
     }
   };
 
-  // Удаление профильного изображения
   const RemoveProfileImage = () => {
-    setProfileImage(false);
-  }
+    setProfileImage(null);
+  };
 
-  // Обработка отправки формы регистрации
   const handleSubmit = () => {
-    if (!state.email || !state.nickname  || !state.password) {
+    if (!state.email || !state.nickname || !state.password) {
       return Alert.alert('Все поля обязательны для заполнения');
     }
-    dispatch(authSignUpUser(state));
+    dispatch(authSignUpUser(state)).then((userId) => {
+      // Получение токена устройства
+      getExpoPushTokenAsync().then((token) => {
+        // Отправка данных пользователя на сервер
+        const requestBody = {
+          userid: userId,
+          email: state.email,
+          name: state.nickname,
+          expoToken: token.data
+        };
+
+        fetch('http://192.168.31.205:8088/gateway/websocket/api/v2/firebaseUsers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        })
+            .then(response => response.json())
+            .then(data => {
+              // Обработка ответа от сервера
+              console.log(data);
+              // Возможно, здесь нужно что-то сделать с ответом
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+      });
+    });
     setState(initialState);
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        height={height}
-        width={width}
-        style={styles.container}
-        keyboardVerticalOffset={-150}
-    >
-        <ImageBackground
-          style={styles.image}
-          height={height}
-          width={width}
-          preserveAspectRatio='xMidYWid slice'
-          source={require("../../assets/images/signUp.jpg")}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            height={height}
+            width={width}
+            style={styles.container}
+            keyboardVerticalOffset={-150}
         >
-        <View style={styles.innerBox} height={height / 1.80}>
-            {profileImage ?
-              <Image
-                source={{ uri: profileImage }}
-                style={{...styles.photoBox, width: 120, height: 120 }} />
-              : <View style={{ ...styles.photoBox, backgroundColor: "#F6F6F6" }} />}
-            {profileImage ?
-              <TouchableOpacity onPress={RemoveProfileImage} >
-              <View style={{...styles.photoBoxBtn, borderColor: "#BDBDBD"}}>
-                  <AntDesign name="close" size={16} color="#BDBDBD"/>
-                </View>
-            </TouchableOpacity> :
-              <TouchableOpacity onPress={PickProfileImage}>
-                <View style={{...styles.photoBoxBtn, borderColor: "#FF6C00"}}>
-                  <AntDesign name="plus" size={16} color="#FF6C00"/>
-                </View>
-              </TouchableOpacity>
-            }
-            <Text style={styles.titleText}>Создать аккаунт</Text>
-                <View style={styles.form}>
-                  <TextInput
+          <ImageBackground
+              source={require("../../assets/images/signUp.jpg")}
+              style={styles.backgroundImage}
+          >
+            <View style={styles.innerBox}>
+              {profileImage ? (
+                  <Image source={{ uri: profileImage }} style={styles.photoBox} />
+              ) : (
+                  <View style={styles.photoBoxPlaceholder} />
+              )}
+              {profileImage ? (
+                  <TouchableOpacity onPress={RemoveProfileImage}>
+                    <View style={styles.photoBoxBtn}>
+                      <AntDesign name="close" size={16} color="#BDBDBD" />
+                    </View>
+                  </TouchableOpacity>
+              ) : (
+                  <TouchableOpacity onPress={PickProfileImage}>
+                    <View style={styles.photoBoxBtn}>
+                      <AntDesign name="plus" size={16} color="#FF6C00" />
+                    </View>
+                  </TouchableOpacity>
+              )}
+              <Text style={styles.titleText}>Sign up</Text>
+              <View style={styles.form}>
+                <TextInput
                     style={isFocused.nickname ? [styles.input, styles.inputFocused] : styles.input}
-                    placeholder="Логин"
+                    placeholder="Full Name"
                     placeholderTextColor="#BDBDBD"
-                    textContentType={"username"}
+                    textContentType="username"
                     value={state.nickname}
                     onChangeText={(value) =>
-                      setState((prevState) => ({ ...prevState, nickname: value }))
+                        setState((prevState) => ({ ...prevState, nickname: value }))
                     }
                     onFocus={() => onFocus('nickname')}
                     onBlur={() => onBlur('nickname')}
-                  />
-                  <TextInput
+                />
+                <TextInput
                     style={isFocused.email ? [styles.input, styles.inputFocused] : styles.input}
                     placeholder="Email"
                     placeholderTextColor="#BDBDBD"
-                    inputmode={'email'}
-                    textContentType={"emailAddress"}
-                    keyboardType={'email-address'}
+                    textContentType="emailAddress"
+                    keyboardType="email-address"
                     value={state.email}
                     onChangeText={(value) =>
-                      setState((prevState) => ({ ...prevState, email: value }))
+                        setState((prevState) => ({ ...prevState, email: value }))
                     }
                     onFocus={() => onFocus('email')}
                     onBlur={() => onBlur('email')}
-                  />
-              <View>
-                  <TextInput
-                    style={isFocused.password ? [styles.input, styles.inputFocused] : {...styles.input, position: 'relative'}}
-                    placeholder="Пароль"
-                    placeholderTextColor="#BDBDBD"
-                    textContentType={"password"}
-                    secureTextEntry={isSecureEntry}
-                    maxLength={10}
-                    value={state.password}
-                    onChangeText={(value) =>
-                      setState((prevState) => ({ ...prevState, password: value }))
-                    }
-                    onFocus={() => onFocus('password')}
-                    onBlur={() => onBlur('password')}
                 />
-                <TouchableOpacity onPress={() => setSecureEntry((prev) => !prev)}>
-                  {/* Используем иконку глаза */}
-                  <AntDesign name={isSecureEntry ? "eye" : "eyeo"} size={20} color="#1B4371" style={styles.eyeIcon} />
-                </TouchableOpacity>
-              </View>
-            <View style={styles.btnBox}>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                      style={
+                        isFocused.password
+                            ? [styles.input, styles.inputFocused]
+                            : styles.input
+                      }
+                      placeholder="Password"
+                      placeholderTextColor="#BDBDBD"
+                      textContentType="password"
+                      secureTextEntry={isSecureEntry}
+                      value={state.password}
+                      onChangeText={(value) =>
+                          setState((prevState) => ({ ...prevState, password: value }))
+                      }
+                      onFocus={() => onFocus('password')}
+                      onBlur={() => onBlur('password')}
+                  />
+                  <TouchableOpacity
+                      onPress={() => setSecureEntry((prev) => !prev)}
+                      style={styles.toggleButton}
+                  >
+                    <Text style={styles.textSecure}>{isSecureEntry ? 'Show' : 'Hide'}</Text>
+                  </TouchableOpacity>
+                </View>
                 <TouchableOpacity style={styles.btn} onPress={handleSubmit}>
-                <Text style={styles.btnText}>Зарегистрироваться</Text>
+                  <Text style={styles.btnText}>Continue</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <Text onPress={() => navigation.navigate("Login")} style={styles.text}>У вас уже есть учетная запись? Войти</Text>
+                  <Text
+                      onPress={() => navigation.navigate("Login")}
+                      style={styles.text}
+                  >
+                    Already have an account? Sign in
+                  </Text>
                 </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </View>
-        </ImageBackground>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+          </ImageBackground>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
   );
 }
 
-// Стили компонента
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
+  backgroundImage: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
+    alignItems: "center",
   },
   innerBox: {
-    position: "relative",
-    alignItems: 'center',
-    backgroundColor: "#fff",
+    width: "90%",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 25,
+    padding: 20,
   },
   photoBox: {
-    position: "absolute",
-    marginTop: -60,
     width: 120,
     height: 120,
     borderRadius: 16,
+    marginTop: -60,
+    marginBottom: 15,
+  },
+  photoBoxPlaceholder: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+    backgroundColor: "#F6F6F6",
+    marginTop: -60,
+    marginBottom: 15,
   },
   photoBoxBtn: {
     position: "absolute",
-    alignContent: 'center', 
-    left: 48,
-    marginVertical: 15,
-    backgroundColor: '#ffffff',
+    top: 75,
+    right: 45,
+    backgroundColor: "#fff",
+    borderColor: "#FF6C00",
     borderWidth: 1,
-    borderRadius: 50,
-    width: 23,
-    height: 23,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: "center",
+    justifyContent: "center",
   },
   titleText: {
-    marginTop: 92,
-    marginBottom: 15,
-    fontFamily: "Roboto-Medium",
     fontSize: 30,
     lineHeight: 35,
     letterSpacing: 1,
+    fontWeight: "bold",
+    marginBottom: 15,
   },
   form: {
     width: "100%",
-    paddingHorizontal: 20,
   },
   input: {
     marginTop: 16,
     height: 50,
     padding: 15,
-    fontFamily: "Roboto-Regular",
-    color: "#212121",
     fontSize: 16,
-    lineHeight: 19,
     backgroundColor: "#F6F6F6",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 25,
     borderColor: "#E8E8E8",
   },
   inputFocused: {
-    borderColor: '#FF6C00',
-    backgroundColor: '#FFFFFF'
+    borderColor: "#FF6C00",
+    backgroundColor: "#FFFFFF",
   },
-  eyeIcon: {
-    position: "absolute",
-    top: "50%",
-    right: 20,
-    transform: [{ translateY: -35 }],
+  passwordContainer: {
+    position: "relative",
+    marginTop: 16,
+    height: 50, // Ensure the container matches the input height
   },
-  btnBox: {
-    marginTop: 45,
+  toggleButton: {
+    position: 'absolute',
+    right: 15,
+    top: 12, // Centered vertically
+  },
+  textSecure: {
+    fontSize: 14,
+    color: "#1B4371",
   },
   btn: {
-    backgroundColor: '#FF6C00',
-    borderRadius: 100,
+    marginTop: 20,
+    backgroundColor: "#FF6C00",
+    borderRadius: 25,
+    paddingVertical: 15,
+    alignItems: "center",
   },
   btnText: {
-    fontFamily: "Roboto-Regular",
-    color: "#ffffff",
+    color: "#fff",
     fontSize: 16,
-    lineHeight: 19,
-    textAlign: 'center',
-    padding: 16,
   },
   text: {
-    marginTop: 18,
-    fontFamily: "Roboto-Regular",
+    marginTop: 20,
     fontSize: 16,
-    lineHeight: 19,
-    color: '#1B4371',
-    textAlign: 'center',
-  }
+    color: "#1B4371",
+    textAlign: "center",
+  },
 });

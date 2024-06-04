@@ -12,12 +12,8 @@ const CreatePostsScreen = () => {
 
     const fetchNotifications = async () => {
         try {
-            const response = await fetch('http://192.168.31.237:8088/gateway/sms-gate/api/v1/notifications', {
+            const response = await fetch('http://2.132.51.228:8088/gateway/sms-gate/api/v1/notifications', {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpdmFuLml2YW5vdjQyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzEzOTMwMDc5LCJleHAiOjE3MTQ2MzAwNzl9.DLHOohe3ltkGtRQcG6uPrnAHvM3u50qo-1ga0gOtybY',
-                },
             });
             const json = await response.json();
             setNotifications(json);

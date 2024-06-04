@@ -65,7 +65,10 @@
     "react-native-webview": "^13.8.6",
     "react-redux": "^8.0.5",
     "xlsx": "^0.18.5",
-    "xlsx-stream-reader": "^1.1.1"
+    "xlsx-stream-reader": "^1.1.1",
+    "react-native-web": "~0.19.10",
+    "react-dom": "18.2.0",
+    "@expo/metro-runtime": "~3.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

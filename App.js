@@ -9,6 +9,10 @@ import {getAuth, onAuthStateChanged} from "firebase/auth";
 import * as Notifications from "expo-notifications";
 import { Alert, View } from 'react-native';
 import {useRoute} from "./router";
+import * as Device from "expo-device";
+import {doc, setDoc} from "firebase/firestore";
+import {firestore} from "./firebase/config";
+import {useNavigation} from "@react-navigation/native";
 
 const BACKGROUND_FETCH_TASK = 'BACKGROUND_FETCH_TASK';
 

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Switch, StyleSheet } from 'react-native';
 
 const SettingsScreen = () => {
-    const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-    const [language, setLanguage] = useState('ru'); // Default language
-    const [locationEnabled, setLocationEnabled] = useState(false);
+    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+    const [locationEnabled, setLocationEnabled] = useState(true);
 
     const toggleNotifications = () => {
         setNotificationsEnabled(previousState => !previousState);
@@ -14,15 +13,10 @@ const SettingsScreen = () => {
         setLocationEnabled(previousState => !previousState);
     };
 
-    const changeLanguage = () => {
-        const newLanguage = language === 'ru' ? 'en' : 'ru'; // Toggle between 'ru' and 'en'
-        setLanguage(newLanguage);
-    };
-
     return (
         <View style={styles.container}>
             <View style={styles.setting}>
-                <Text style={styles.settingText}>Уведомления</Text>
+                <Text style={styles.settingText}>Notifications</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={notificationsEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -32,7 +26,7 @@ const SettingsScreen = () => {
                 />
             </View>
             <View style={styles.setting}>
-                <Text style={styles.settingText}>Доступ к геопозиции</Text>
+                <Text style={styles.settingText}>Location</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={locationEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -41,9 +35,6 @@ const SettingsScreen = () => {
                     value={locationEnabled}
                 />
             </View>
-            <TouchableOpacity style={styles.languageButton} onPress={changeLanguage}>
-                <Text style={styles.languageButtonText}>Изменить язык: {language === 'ru' ? 'Английский' : 'Русский'}</Text>
-            </TouchableOpacity>
         </View>
     );
 };
@@ -68,18 +59,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 20,
         color: '#212121',
-    },
-    languageButton: {
-        backgroundColor: '#2196F3',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    languageButtonText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        textAlign: 'center',
     },
 });
 
