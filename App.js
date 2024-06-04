@@ -34,7 +34,7 @@ const App = () => {
         return;
       }
 
-      const loc = await Location.getCurrentPositionAsync({});
+      const loc = await Location.getCurrentPositionAsync({accuracy: 6, timeInterval: 10});
       setLocation(loc);
     };
 
