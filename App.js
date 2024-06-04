@@ -94,7 +94,7 @@ const App = () => {
   }, []);
 
   const connectWebSocket = useCallback(() => {
-    const ws = new WebSocket('ws://192.168.31.205:8088/gateway/websocket/api/v2/websocket');
+    const ws = new WebSocket('ws://2.132.51.228:8088/gateway/websocket/api/v2/websocket');
 
     ws.onopen = () => {
       console.log('WebSocket connection opened');
