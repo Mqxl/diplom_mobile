@@ -20,7 +20,6 @@ const MessagesScreen = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpdmFuLml2YW5vdjQyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzEzOTMwMDc5LCJleHAiOjE3MTQ2MzAwNzl9.DLHOohe3ltkGtRQcG6uPrnAHvM3u50qo-1ga0gOtybY',
                 },
             });
             const json = await response.json();
