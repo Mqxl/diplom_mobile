@@ -9,6 +9,7 @@
     "runtimeVersion": {
       "policy": "appVersion"
     },
+
     "plugins": [
       [
         "expo-notifications",
