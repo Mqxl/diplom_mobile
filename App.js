@@ -114,7 +114,7 @@ const App = () => {
       setWebsocket(null);
       setTimeout(() => {
         connectWebSocket(); // Retry connection after 10 seconds
-      }, 10000);
+      }, 2000);
     };
 
     return ws;
