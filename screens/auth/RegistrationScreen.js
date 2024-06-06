@@ -10,6 +10,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { authSignUpUser } from "../../redux/auth/authOperations";
 import { Platform } from "react-native";
 import {getExpoPushTokenAsync} from "expo-notifications";
+import {base_url} from "../config/rest_config";
 
 const initialState = {
   nickname: "",
@@ -107,7 +108,7 @@ export default function RegistrationScreen({ navigation }) {
           expoToken: token.data
         };
 
-        fetch('http://192.168.31.205:8088/gateway/websocket/api/v2/firebaseUsers', {
+        fetch(`http://${base_url}:8088/gateway/websocket/api/v2/firebaseUsers`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

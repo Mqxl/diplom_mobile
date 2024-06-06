@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import {View, TouchableOpacity, Text, StyleSheet, Linking} from "react-native";
 import { Feather } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { authSignOutUser } from "../../redux/auth/authOperations";
@@ -9,6 +9,8 @@ import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {doc, setDoc} from "firebase/firestore";
 import {firestore} from "../../firebase/config";
 import {useNavigation} from "@react-navigation/native";
+import {base_url} from "../config/rest_config";
+import { auth } from "../../firebase/config";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -19,7 +21,10 @@ Notifications.setNotificationHandler({
 });
 
 const HomeScreen = ({ navigation }) => {
+    let balance = 0;
+
     useEffect(() => {
+        fetchData();
         (async () => {
             const isDevice = Device.isDevice
             if(!isDevice) return
@@ -58,6 +63,25 @@ const HomeScreen = ({ navigation }) => {
             }
         })();
     }, [])
+
+    const fetchData = async () => {
+        try {
+            console.log(auth.currentUser.id)
+            const response = await fetch(`http://${base_url}:8088/gateway/websocket/api/v2/firebaseUsers/1/balance`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const json = await response.json();
+            balance = json.amount;
+        } catch (error) {
+            console.error('Fetch data failed:', error);
+        }
+    };
 
     useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
@@ -99,6 +123,7 @@ const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.greeting}>Hello, {nickname}!</Text>
+            <Text>Balance: {balance}</Text>
             <TouchableOpacity style={styles.button} onPress={goToSettings}>
                 <Feather name="settings" size={24} color="#FFFFFF" />
                 <Text style={styles.buttonText}>Settings</Text>

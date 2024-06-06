@@ -12,6 +12,7 @@
   "dependencies": {
     "@expo/config": "~9.0.0",
     "@expo/metro-config": "~0.18.1",
+    "@expo/metro-runtime": "~3.2.1",
     "@expo/vector-icons": "^14.0.0",
     "@google/generative-ai": "^0.3.0",
     "@react-native-async-storage/async-storage": "1.23.1",
@@ -45,6 +46,7 @@
     "moment": "^2.30.1",
     "react": "18.2.0",
     "react-devtools-core": "^5.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.74.1",
     "react-native-background-timer": "^2.4.1",
     "react-native-chart-kit": "^6.12.0",
@@ -60,15 +62,14 @@
     "react-native-svg": "15.2.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-table-component": "^1.2.2",
+    "react-native-tesseract-ocr": "^2.0.3",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-web": "~0.19.10",
     "react-native-webview": "^13.8.6",
     "react-redux": "^8.0.5",
     "xlsx": "^0.18.5",
-    "xlsx-stream-reader": "^1.1.1",
-    "react-native-web": "~0.19.10",
-    "react-dom": "18.2.0",
-    "@expo/metro-runtime": "~3.2.1"
+    "xlsx-stream-reader": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

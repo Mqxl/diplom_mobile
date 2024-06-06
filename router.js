@@ -10,6 +10,7 @@ import CreatePostsScreen from "./screens/main/CreatePostsScreen";
 import PostsScreen from "./screens/main/PostsScreen";
 import MessagesScreen from "./screens/main/MessagesScreen";
 import NewsScreen from "./screens/main/NewsScreen";
+import PromotionScreen from "./screens/main/PromotionScreen";
 
 
 const AuthStack = createStackNavigator();
@@ -99,7 +100,7 @@ export const useRoute = (isAuth, navigation) => {
         options={({ navigation, route }) => ({
           tabBarIcon: ({ focused, size, color }) => (
               <Feather
-                  name={focused ? "bell" : "bell"}
+                  name={focused ? "dollar-sign" : "dollar-sign"}
                   size={28}
                   color={color}
                   style={{ alignSelf: 'center', marginTop: 10 }}
@@ -109,6 +110,22 @@ export const useRoute = (isAuth, navigation) => {
 
         })}
       />
+          <MainTab.Screen
+              name='Promotion'
+              component={PromotionScreen}
+              options={({ navigation, route }) => ({
+                  tabBarIcon: ({ focused, size, color }) => (
+                      <Feather
+                          name={focused ? "gift" : "gift"}
+                          size={28}
+                          color={color}
+                          style={{ alignSelf: 'center', marginTop: 10 }}
+                      />
+                  ),
+                  headerShown: false,
+
+              })}
+          />
       <MainTab.Screen
         name='News'
         component={NewsScreen}

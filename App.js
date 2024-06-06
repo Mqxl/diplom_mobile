@@ -13,6 +13,7 @@ import * as Device from "expo-device";
 import {doc, setDoc} from "firebase/firestore";
 import {firestore} from "./firebase/config";
 import {useNavigation} from "@react-navigation/native";
+import {base_url} from "./screens/config/rest_config";
 
 const BACKGROUND_FETCH_TASK = 'BACKGROUND_FETCH_TASK';
 
@@ -94,7 +95,8 @@ const App = () => {
   }, []);
 
   const connectWebSocket = useCallback(() => {
-    const ws = new WebSocket('ws://2.132.51.228:8088/gateway/websocket/api/v2/websocket');
+    console.log(`ws://${base_url}:8088/gateway/websocket/api/v2/websocket`)
+    const ws = new WebSocket(`ws://${base_url}:8088/gateway/websocket/api/v2/websocket`);
 
     ws.onopen = () => {
       console.log('WebSocket connection opened');

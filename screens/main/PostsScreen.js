@@ -9,6 +9,8 @@ import SettingsScreen from "../nestedScreen/SettingsScreen";
 import NotificationDetails from "./NotificationDetails";
 import OutletDetailsScreen from "../nestedScreen/OutletDetailsScreen";
 import NotificationDetailsScreen from "../nestedScreen/NotificationDetail";
+import MallMapScreen from "../nestedScreen/MallMapScreen";
+import PromotionDetailScreen from "../nestedScreen/PromotionDetailScreen";
 
 
 const NestedScreen = createStackNavigator();
@@ -28,7 +30,9 @@ const PostsScreen = () => {
             <NestedScreen.Screen name="AboutCompany" component={AboutCompanyScreen} />
             <NestedScreen.Screen name="OutletDetails" component={OutletDetailsScreen} />
             <NestedScreen.Screen name="Settings" component={SettingsScreen} />
+            <NestedScreen.Screen name="PromotionDetail" component={PromotionDetailScreen} />
             <NestedScreen.Screen name="NotificationDetails" component={NotificationDetailsScreen} />
+            <NestedScreen.Screen name="MallMap" component={MallMapScreen} />
         </NestedScreen.Navigator>
     );
 };
