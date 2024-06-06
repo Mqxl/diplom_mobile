@@ -1,5 +1,5 @@
-import React, {useEffect} from "react";
-import {View, TouchableOpacity, Text, StyleSheet, Linking} from "react-native";
+import React, {useState, useEffect, useCallback} from "react";
+import {View, ScrollView, TouchableOpacity, Text, StyleSheet, Linking, RefreshControl} from "react-native";
 import { Feather } from '@expo/vector-icons';
 import { useDispatch, useSelector } from "react-redux";
 import { authSignOutUser } from "../../redux/auth/authOperations";
@@ -21,15 +21,35 @@ Notifications.setNotificationHandler({
 });
 
 const HomeScreen = ({ navigation }) => {
-    let balance = 0;
+    const [balance, setBalance] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchData = async () => {
+        try {
+            console.log(auth.currentUser.uid);
+            const response = await fetch(`http://${base_url}:8088/gateway/websocket/api/v2/firebaseUsers/1/balance`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const json = await response.json();
+            setBalance(json.amount);
+        } catch (error) {
+            console.error('Fetch data failed:', error);
+        }
+    };
 
     useEffect(() => {
         fetchData();
         (async () => {
-            const isDevice = Device.isDevice
-            if(!isDevice) return
-            console.log('get push token')
-            const { status: existingStatus } = await Notifications.getPermissionsAsync()
+            const isDevice = Device.isDevice;
+            if(!isDevice) return;
+            console.log('get push token');
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
             let finalStatus = existingStatus;
             if (existingStatus !== "granted") {
                 const { status } = await Notifications.requestPermissionsAsync();
@@ -42,13 +62,13 @@ const HomeScreen = ({ navigation }) => {
             const token = await Notifications.getExpoPushTokenAsync({
                 projectId: "f74bdb73-6063-4309-b369-8deaf496224a"
             });
-            let uid = ""
+            let uid = "";
             await onAuthStateChanged(auth, (user) => {
                 if (user) {
                     uid = user.uid;
-                    console.log(uid)
+                    console.log(uid);
                 } else {
-                    console.log("err")
+                    console.log("err");
                 }
             });
             const tokensRef = doc(firestore, 'tokens', uid);
@@ -62,40 +82,28 @@ const HomeScreen = ({ navigation }) => {
                 console.error("Произошла ошибка при записи данных в Firestore:", error);
             }
         })();
-    }, [])
+    }, []);
 
-    const fetchData = async () => {
-        try {
-            console.log(auth.currentUser.id)
-            const response = await fetch(`http://${base_url}:8088/gateway/websocket/api/v2/firebaseUsers/1/balance`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const json = await response.json();
-            balance = json.amount;
-        } catch (error) {
-            console.error('Fetch data failed:', error);
-        }
-    };
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
+    }, []);
 
     useEffect(() => {
         const subscription = Notifications.addNotificationReceivedListener(notification => {
-            console.log("receiv", notification);
+            console.log("receive", notification);
         });
-        const subscription2= Notifications.addNotificationResponseReceivedListener(notification => {
+        const subscription2 = Notifications.addNotificationResponseReceivedListener(notification => {
             console.log("response", notification);
-            navigation.navigate('NotificationDetails', { data: notification});
+            navigation.navigate('NotificationDetails', { data: notification });
         });
         return () => {
             subscription.remove();
-            subscription2.remove;
-        }
+            subscription2.remove();
+        };
     }, []);
+
     const { nickname } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
@@ -108,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
     };
 
     const goToDetails = () => {
-        navigation.navigate('NotificationDetails')
+        navigation.navigate('NotificationDetails');
     };
 
     const openWhatsApp = () => {
@@ -121,7 +129,12 @@ const HomeScreen = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={styles.container}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+        >
             <Text style={styles.greeting}>Hello, {nickname}!</Text>
             <Text>Balance: {balance}</Text>
             <TouchableOpacity style={styles.button} onPress={goToSettings}>
@@ -139,13 +152,13 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity onPress={signOut}>
                 <Feather name="log-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
